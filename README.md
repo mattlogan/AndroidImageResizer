@@ -14,6 +14,8 @@ of the original images resized to fit the major Android screen densities: mdpi, 
 
 ![alt tag](https://raw.github.com/mattlogan/AndroidImageResizer/master/github-assets/demo-after.png)
 
+## License
+
 The MIT License (MIT)
 
 Copyright (c) 2014 Matthew Logan
