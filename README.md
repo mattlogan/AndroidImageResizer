@@ -8,8 +8,8 @@ of the original images resized to fit the major Android screen densities: mdpi, 
 
 **Before**
 
-![alt tag](https://raw.github.com/mattlogan/AndroidImageResizer/master/demo-before.png)
+![alt tag](https://raw.github.com/mattlogan/AndroidImageResizer/github-assets/master/demo-before.png)
 
 **After**
 
-![alt tag](https://raw.github.com/mattlogan/AndroidImageResizer/master/demo-after.png)
+![alt tag](https://raw.github.com/mattlogan/AndroidImageResizer/github-assets/master/demo-after.png)
