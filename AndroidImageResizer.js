@@ -8,9 +8,7 @@ var readline = require('readline');
 var sizeNames = ['xxhdpi', 'xhdpi', 'hdpi', 'mdpi'];
 
 for (var i = 0; i < sizeNames.length; i++) {
-  fs.mkdirSync(sizeNames[i], function(err) {
-    if(err) throw err;
-  });
+  fs.mkdirSync(sizeNames[i]);
 }
 
 var currentDirectory = process.cwd();
