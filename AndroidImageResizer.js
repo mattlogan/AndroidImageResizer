@@ -3,7 +3,6 @@
 var fs = require('fs');
 var path = require('path');
 var imagemagick = require('imagemagick');
-var readline = require('readline');
 
 var sizeNames = ['xxhdpi', 'xhdpi', 'hdpi', 'mdpi'];
 
