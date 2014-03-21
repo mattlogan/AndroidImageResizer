@@ -3,33 +3,69 @@
 var fs = require('fs');
 var path = require('path');
 var imagemagick = require('imagemagick');
+var readline = require('readline');
 
-var sizeNames = ['xxhdpi', 'xhdpi', 'hdpi', 'mdpi'];
+var sizeNames = ['xxxhdpi', 'xxhdpi', 'xhdpi', 'hdpi', 'mdpi', 'ldpi'];
+var multipliers = [4.0, 3.0, 2.0, 1.5, 1, 0.75];
 
-console.log("Making directories...")
-for (var i = 0; i < sizeNames.length; i++) {
-  fs.mkdirSync(sizeNames[i]);
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+var imageFiles = [];
+
+var currentImageSize;
+var smallestImageSize;
+
+askUserForCurrentSize();
+
+function askUserForCurrentSize() {
+  rl.question("Enter current image size [xxxhdpi, xxhdpi, xhdpi, hdpi, mdpi, ldpi]: ",
+  function(inputString) {
+    currentImageSize = inputString;
+    askUserForSmallestSize();
+  });
 }
 
-var currentDirectory = process.cwd();
-var allFiles = fs.readdirSync(currentDirectory);
+function askUserForSmallestSize() {
+  rl.question("Enter smallest desired image size [xxxhdpi, xxhdpi, xhdpi, hdpi, mdpi, ldpi]: ",
+  function(inputString) {
+    smallestImageSize = inputString;
+    makeDirectories();
+    rl.close();
+  });
+}
 
-console.log("Finding image files...")
-var imageFiles = [];
-for (var i = 0; i < allFiles.length; i++) {
-  var extname = path.extname(allFiles[i]);
-  if (extname == '.jpg' || extname == '.jpeg' || extname == '.png') {
-    imageFiles.push(allFiles[i]);
+function makeDirectories() {
+  console.log("Making directories...");
+  var startIndex = sizeNames.indexOf(currentImageSize);
+  var endIndex = sizeNames.indexOf(smallestImageSize);
+  for (var i = startIndex; i <= endIndex; i++) {
+    fs.mkdirSync(sizeNames[i]);
   }
-  if (i == allFiles.length - 1) {
-    resize(0, 0);
-    console.log("Resizing all images...")
+  populateImageFiles();
+}
+
+function populateImageFiles() {
+  console.log("Finding image files...");
+  var currentDirectory = process.cwd();
+  var allFiles = fs.readdirSync(currentDirectory);
+  for (var i = 0; i < allFiles.length; i++) {
+    var extname = path.extname(allFiles[i]);
+    if (extname == '.jpg' || extname == '.jpeg' || extname == '.png') {
+      imageFiles.push(allFiles[i]);
+    }
+    if (i == allFiles.length - 1) {
+      console.log("Resizing all images...");
+      resize(0, 0);
+    }
   }
 }
 
 function resize(fileIndex, sizeIndex) {
   imagemagick.convert(
-      [imageFiles[fileIndex], '-resize', getMultiplierString(sizeNames[sizeIndex]),
+      [imageFiles[fileIndex], '-resize', getPercentString(sizeNames[sizeIndex]),
       getPath(fileIndex, sizeIndex)],
       function() {
         if (sizeIndex < sizeNames.length) {
@@ -46,28 +82,10 @@ function getPath(fileIndex, sizeIndex) {
   return sizeNames[sizeIndex] + '/' + imageFiles[fileIndex];
 }
 
-function getMultiplierString(sizeName) {
-	return (getMultiplier(sizeName) * 100) + '%';
+function getPercentString(sizeName) {
+	return getPercent(sizeName) * 100 + '%';
 }
 
-function getMultiplier(sizeName) {
-  var multiplier;
-    switch (sizeName) {
-      case 'xxhdpi':
-        multiplier = 3.0 / 3.0;
-        break;
-      case 'xhdpi':
-        multiplier = 2.0 / 3.0;
-        break;
-      case 'hdpi':
-        multiplier = 1.5 / 3.0;
-        break;
-      case 'mdpi':
-        multiplier = 1.0 / 3.0;
-        break;
-      default:
-        multiplier = 1;
-        break;
-  }
-  return multiplier;
+function getPercent(sizeName) {
+  return multipliers[sizeNames.indexOf(sizeName)] / multipliers[sizeNames.indexOf(currentImageSize)];
 }
