@@ -11,6 +11,12 @@ Install [ImageMagick for Node.js](https://github.com/rsms/node-imagemagick).
 npm install imagemagick
 ```
 
+[ImageMagick for Node.js](https://github.com/rsms/node-imagemagick) requires ImageMagick CLI tools to be installed. There are numerous ways to install them. For instance, if you're on OS X you can use Homebrew:
+
+```
+brew install imagemagick
+```
+
 Run this script in a directory with some images.
 
 ```
