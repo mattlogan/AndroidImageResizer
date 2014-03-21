@@ -6,6 +6,7 @@ var imagemagick = require('imagemagick');
 
 var sizeNames = ['xxhdpi', 'xhdpi', 'hdpi', 'mdpi'];
 
+console.log("Making directories...")
 for (var i = 0; i < sizeNames.length; i++) {
   fs.mkdirSync(sizeNames[i]);
 }
@@ -13,23 +14,36 @@ for (var i = 0; i < sizeNames.length; i++) {
 var currentDirectory = process.cwd();
 var allFiles = fs.readdirSync(currentDirectory);
 
+console.log("Finding image files...")
 var imageFiles = [];
 for (var i = 0; i < allFiles.length; i++) {
   var extname = path.extname(allFiles[i]);
   if (extname == '.jpg' || extname == '.jpeg' || extname == '.png') {
     imageFiles.push(allFiles[i]);
   }
-}
-
-for (var i = 0; i < imageFiles.length; i++) {
-  for (var j = 0; j < sizeNames.length; j++) {
-    resize(imageFiles[i], sizeNames[j]);
+  if (i == allFiles.length - 1) {
+    resize(0, 0);
+    console.log("Resizing all images...")
   }
 }
 
-function resize(fileName, sizeName) {
-  imagemagick.convert([fileName, '-resize',
-      getMultiplierString(sizeName), sizeName + '/' + fileName]);
+function resize(fileIndex, sizeIndex) {
+  imagemagick.convert(
+      [imageFiles[fileIndex], '-resize', getMultiplierString(sizeNames[sizeIndex]),
+      getPath(fileIndex, sizeIndex)],
+      function() {
+        if (sizeIndex < sizeNames.length) {
+          resize(fileIndex, sizeIndex + 1);
+        } else if (fileIndex < imageFiles.length) {
+          resize(fileIndex + 1, 0);
+        } else {
+          console.log("Done.")
+        }
+      });
+}
+
+function getPath(fileIndex, sizeIndex) {
+  return sizeNames[sizeIndex] + '/' + imageFiles[fileIndex];
 }
 
 function getMultiplierString(sizeName) {
