@@ -81,7 +81,7 @@ function getPath(fileIndex, sizeIndex) {
 }
 
 function getPercentString(sizeName) {
-	return getPercent(sizeName) * 100 + '%';
+  return getPercent(sizeName) * 100 + '%';
 }
 
 function getPercent(sizeName) {
