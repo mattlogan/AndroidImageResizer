@@ -3,16 +3,27 @@ AndroidImageResizer
 
 A Node.js script for resizing images for Android apps.
 
-Run this script in a directory with images at "xxhdpi" size.  You'll get four new folders in that directory with all
-of the original images resized to fit the major Android screen densities: mdpi, hdpi, xhdpi, and xxhdpi.
+## How to Use
 
-**Before:**
+Run this script in a directory with some images.
 
-![alt tag](https://raw.github.com/mattlogan/AndroidImageResizer/master/github-assets/demo-before.png)
+```
+node AndroidImageResizer.js
+```
 
-**After:**
+Enter starting image size when prompted.
 
-![alt tag](https://raw.github.com/mattlogan/AndroidImageResizer/master/github-assets/demo-after.png)
+```
+Enter current image size [xxxhdpi, xxhdpi, xhdpi, hdpi, mdpi, ldpi]: xxhdpi
+```
+
+Enter smallest desired image size when prompted.
+
+```
+Enter smallest desired image size [xxxhdpi, xxhdpi, xhdpi, hdpi, mdpi, ldpi]: mdpi
+```
+
+Some folders will appear in your directory with all of your resized images.
 
 ## License
 
