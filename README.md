@@ -1,9 +1,15 @@
 AndroidImageResizer
 ===================
 
-A Node.js script for resizing images for Android apps.
+A Node.js + ImageMagick script for resizing images for Android apps.
 
 ## How to Use
+
+Install [ImageMagick for Node.js](https://github.com/rsms/node-imagemagick).
+
+```
+npm install imagemagick
+```
 
 Run this script in a directory with some images.
 
