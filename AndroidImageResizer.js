@@ -16,8 +16,6 @@ var imageFiles = [];
 var currentImageSize;
 var smallestImageSize;
 
-askUserForCurrentSize();
-
 function askUserForCurrentSize() {
   rl.question("Enter current image size [xxxhdpi, xxhdpi, xhdpi, hdpi, mdpi, ldpi]: ",
   function(inputString) {
@@ -87,3 +85,5 @@ function getPercentString(sizeName) {
 function getPercent(sizeName) {
   return multipliers[sizeNames.indexOf(sizeName)] / multipliers[sizeNames.indexOf(currentImageSize)];
 }
+
+askUserForCurrentSize();
