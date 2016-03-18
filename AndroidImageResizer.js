@@ -38,7 +38,7 @@ function makeDirectories() {
   var startIndex = sizeNames.indexOf(currentImageSize);
   var endIndex = sizeNames.indexOf(smallestImageSize);
   for (var i = startIndex; i <= endIndex; i++) {
-    fs.mkdirSync(sizeNames[i]);
+    fs.mkdirSync('drawable-'+sizeNames[i]);
   }
   populateImageFiles();
 }
@@ -75,7 +75,7 @@ function resize(fileIndex, sizeIndex) {
 }
 
 function getPath(fileIndex, sizeIndex) {
-  return sizeNames[sizeIndex] + '/' + imageFiles[fileIndex];
+  return 'drawable-'+sizeNames[sizeIndex] + '/' + imageFiles[fileIndex];
 }
 
 function getPercentString(sizeName) {
