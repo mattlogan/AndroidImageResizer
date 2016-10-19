@@ -49,7 +49,7 @@ function populateImageFiles() {
   var allFiles = fs.readdirSync(currentDirectory);
   for (var i = 0; i < allFiles.length; i++) {
     var extname = path.extname(allFiles[i]);
-    if (extname == '.jpg' || extname == '.jpeg' || extname == '.png') {
+    if (extname == '.jpg' || extname == '.jpeg' || extname == '.png' || extname == '.webp') {
       imageFiles.push(allFiles[i]);
     }
     if (i == allFiles.length - 1) {
