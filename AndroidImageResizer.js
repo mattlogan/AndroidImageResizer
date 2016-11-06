@@ -76,18 +76,20 @@ function populateImageFiles() {
 }
 
 function resize(fileIndex, sizeIndex) {
-  imagemagick.convert(
-      [imageFiles[fileIndex], '-resize', getPercentString(sizeNames[sizeIndex]),
-      getPath(fileIndex, sizeIndex)],
-      function() {
-        if (sizeIndex < sizeNames.length) {
-          resize(fileIndex, sizeIndex + 1);
-        } else if (fileIndex < imageFiles.length) {
-          resize(fileIndex + 1, 0);
-        } else {
-          console.log("Done.")
-        }
-      });
+  if(fileIndex >= imageFiles.length) {
+    console.log("Done.");
+    return;
+  }
+  imagemagick.convert([imageFiles[fileIndex], '-resize', getPercentString(sizeNames[sizeIndex]), getPath(fileIndex, sizeIndex)], function() {
+    if (sizeIndex < sizeNames.length) {
+      resize(fileIndex, sizeIndex + 1);
+      return;
+    }
+    if (fileIndex < imageFiles.length) {
+      return;
+      resize(fileIndex + 1, 0);
+    }
+  });
 }
 
 function getPath(fileIndex, sizeIndex) {
