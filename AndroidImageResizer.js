@@ -4,6 +4,9 @@ var imagemagick = require('imagemagick');
 var readline = require('readline');
 
 var sizeNames = ['xxxhdpi', 'xxhdpi', 'xhdpi', 'hdpi', 'mdpi', 'ldpi'];
+var defaultCurrentImageSize = 'xxxhdpi';
+var defaultSmallestImageSize = 'mdpi';
+
 var multipliers = [4.0, 3.0, 2.0, 1.5, 1, 0.75];
 
 var rl = readline.createInterface({
@@ -17,17 +20,29 @@ var currentImageSize;
 var smallestImageSize;
 
 function askUserForCurrentSize() {
-  rl.question("Enter current image size [xxxhdpi, xxhdpi, xhdpi, hdpi, mdpi, ldpi]: ",
+  rl.question("Enter current image size [xxxhdpi, xxhdpi, xhdpi, hdpi, mdpi, ldpi] Default[" + defaultCurrentImageSize + "]: ",
   function(inputString) {
-    currentImageSize = inputString;
+    if(typeof inputString === 'undefined' || !inputString){
+      console.log("Empty user input setting default xxxhdpi");
+      currentImageSize = "xxxhdpi";
+    }
+    else{
+      currentImageSize = inputString;
+    }
     askUserForSmallestSize();
   });
 }
 
 function askUserForSmallestSize() {
-  rl.question("Enter smallest desired image size [xxxhdpi, xxhdpi, xhdpi, hdpi, mdpi, ldpi]: ",
+  rl.question("Enter smallest desired image size [xxxhdpi, xxhdpi, xhdpi, hdpi, mdpi, ldpi] Default[" + defaultSmallestImageSize + "]: ",
   function(inputString) {
-    smallestImageSize = inputString;
+    if(typeof inputString === 'undefined' || !inputString){
+      console.log("Empty user input setting default mdpi");
+      smallestImageSize = "mdpi";
+    }
+    else{
+      smallestImageSize = inputString;
+    }
     makeDirectories();
     rl.close();
   });
@@ -39,6 +54,7 @@ function makeDirectories() {
   var endIndex = sizeNames.indexOf(smallestImageSize);
   for (var i = startIndex; i <= endIndex; i++) {
     fs.mkdirSync('drawable-'+sizeNames[i]);
+    fs.mkdirSync('mipmap-'+sizeNames[i]);
   }
   populateImageFiles();
 }
@@ -60,22 +76,31 @@ function populateImageFiles() {
 }
 
 function resize(fileIndex, sizeIndex) {
-  imagemagick.convert(
-      [imageFiles[fileIndex], '-resize', getPercentString(sizeNames[sizeIndex]),
-      getPath(fileIndex, sizeIndex)],
-      function() {
-        if (sizeIndex < sizeNames.length) {
-          resize(fileIndex, sizeIndex + 1);
-        } else if (fileIndex < imageFiles.length) {
-          resize(fileIndex + 1, 0);
-        } else {
-          console.log("Done.")
-        }
-      });
+  if(fileIndex >= imageFiles.length) {
+    console.log("Done.");
+    return;
+  }
+  imagemagick.convert([imageFiles[fileIndex], '-resize', getPercentString(sizeNames[sizeIndex]), getPath(fileIndex, sizeIndex)], function() {
+    if (sizeIndex < sizeNames.length) {
+      resize(fileIndex, sizeIndex + 1);
+      return;
+    }
+    if (fileIndex < imageFiles.length) {
+      return;
+      resize(fileIndex + 1, 0);
+    }
+  });
 }
 
 function getPath(fileIndex, sizeIndex) {
-  return 'drawable-'+sizeNames[sizeIndex] + '/' + imageFiles[fileIndex];
+  console.log("File: " + imageFiles[fileIndex] + " sizeIndex: " + sizeIndex + " fileIndex: " + fileIndex + " imageFiles.length: " + imageFiles);
+  if(imageFiles[fileIndex].indexOf("launcher") > -1){
+    console.log("Files is launcher - setting folder name mipmap " + imageFiles[fileIndex]);
+    return 'mipmap-'+sizeNames[sizeIndex] + '/' + imageFiles[fileIndex];
+  }
+  else{
+    return 'drawable-'+sizeNames[sizeIndex] + '/' + imageFiles[fileIndex];
+  }
 }
 
 function getPercentString(sizeName) {
